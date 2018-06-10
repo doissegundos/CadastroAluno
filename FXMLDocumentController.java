@@ -1,4 +1,4 @@
-package cadastro;
+package alunocadastro;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -16,10 +16,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 
 public class FXMLDocumentController implements Initializable {
 
-    private Label label;
     @FXML
     private TextField nomeTextField;
     @FXML
@@ -58,11 +58,15 @@ public class FXMLDocumentController implements Initializable {
     private TextArea exibiçãoTextArea;
     @FXML
     private Button excluirButton;
+    @FXML
+    private TitledPane controleTItledPane;
+    @FXML
+    private Label tituloLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         comboBoxCurso(); // chamamos o metodo comboBoxCurso() para assim os cursos serem adicionados no combobox
-
+        tituloLabel.setText(titulo());
     }
 
     public void comboBoxCurso() { // esse metodo vai adicionar os cursos ao combobox
@@ -94,7 +98,7 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     public void cadastarAluno() { //esse metodo vai ser chamado pelo Button "cadastrar" e vai inserir os dados dos alunos no arraylist
-       
+
         try { // utilizamos o controlador de exceções para caso der algum erro, ou algum usuario inserir algum dado invalido
             int pos = dadosAluno.size();
             String nome = nomeTextField.getText();
@@ -113,9 +117,12 @@ public class FXMLDocumentController implements Initializable {
             PosiçãoArrayList posição = new PosiçãoArrayList(pos);
             Aluno aluno = new Aluno(curso, matricula, nota1, nota2, nota3, nome, sobrenome, email, dia, mes, ano);
 
-            dadosAluno.add(aluno);//agora estamos adicionando os dados de aluno no arraylist
+            if (aluno.idade() >= 0) {
+                dadosAluno.add(aluno);//agora estamos adicionando os dados de aluno no arraylist
+                tituloLabel.setText(titulo());
+                posiçãoVetor = Integer.parseInt(posição.toString());
+            }
 
-            posiçãoVetor = Integer.parseInt(posição.toString());
             exibiçãoTextArea.setText("pos: " + (posiçãoVetor + 1) + "\n" + dadosAluno.get(posiçãoVetor).toString());
             maiorPosição = dadosAluno.size() - 1;
 
@@ -129,7 +136,7 @@ public class FXMLDocumentController implements Initializable {
             nota1TextField.setText(null);
             nota2TextField.setText(null);
             nota3TextField.setText(null);
-            
+
         } catch (Exception erro) { //caso algum usuario insira dados invalidos ele irá chamar o metodo dadosErrados
             dadosErrados();
         }
@@ -139,24 +146,26 @@ public class FXMLDocumentController implements Initializable {
     public void excluirbutton() { //esse metodo vai controlar o button "excluir"
         try {
             dadosAluno.remove(posiçãoVetor);
+            tituloLabel.setText(titulo());
+            maiorPosição = dadosAluno.size() - 1;
             if (posiçãoVetor > 0) {
                 posiçãoVetor--;
                 exibiçãoTextArea.setText("pos: " + (posiçãoVetor + 1) + "\n" + dadosAluno.get(posiçãoVetor).toString());
             } else {
-                if (posiçãoVetor == 0) {
-                    try {
-                        posiçãoVetor = maiorPosição;
-                        exibiçãoTextArea.setText("pos: " + (posiçãoVetor + 1) + "\n" + dadosAluno.get(posiçãoVetor).toString());
-                    } catch (Exception erro) {
-                        exibiçãoTextArea.setText(null);
-                    }
+                try {
+                    posiçãoVetor = maiorPosição;
+                    exibiçãoTextArea.setText("pos: " + (posiçãoVetor + 1) + "\n" + dadosAluno.get(posiçãoVetor).toString());
+                } catch (Exception erro) {
+                    exibiçãoTextArea.setText(null);
                 }
+
             }
         } catch (Exception erro) {
             listaVazia();
         }
     }
 
+    @FXML
     public void proximoButton() { // esse metodo vai controlar o button "proximo"
         try {
             maiorPosição = dadosAluno.size() - 1;
@@ -172,6 +181,7 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 
+    @FXML
     public void anteriorButtor() { //esse metodo vai controlar o button "anterior"
         try {
             maiorPosição = dadosAluno.size() - 1;
@@ -187,16 +197,24 @@ public class FXMLDocumentController implements Initializable {
 
         }
     }
+
     public void listaVazia() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText("Lista vazia");
         alert.showAndWait();
     }
+
     public void dadosErrados() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText("Dado(s) inválidos. Confira os dados fornecidos.");
         alert.showAndWait();
     }
+
+    public String titulo() {
+        int pos = dadosAluno.size();
+        return "Controle de alunos: " + (pos) + " alunos cadastrados";
+    }
+
 }
