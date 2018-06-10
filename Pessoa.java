@@ -1,4 +1,4 @@
-package cadastro;
+package alunocadastro;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -80,9 +80,9 @@ public class Pessoa {
         String anoForm = formatarAno.format(data);
         int anoAtual = Integer.parseInt(anoForm);
 
-        //aqui vamos calculcar o dia atual
+        //aqui vamos calculcar o mes atual
         SimpleDateFormat formatarMes = new SimpleDateFormat("MM");
-        String mesForm = formatarAno.format(data);
+        String mesForm = formatarMes.format(data);
         int mesAtual = Integer.parseInt(mesForm);
 
         //aqui vamos calculcar o dia atual
@@ -96,17 +96,49 @@ public class Pessoa {
         int anoNas = Integer.parseInt(ano);
 
         //aqui está sendo feito o calculo da idade
-        int idade = anoAtual - anoNas;
-        if(mesAtual<mesNas){
-            if(diaAtual<diaNas){
-                idade--;
-            }        
+        int idade = -1;
+        if (anoNas <= anoAtual && mesNas <= 12) {
+            if (diaVeridico(diaNas, mesNas, anoNas) == true) {
+                idade = anoAtual - anoNas;
+                if (mesAtual < mesNas) {
+                    idade--;
+                }
+                if (mesAtual == mesNas && diaAtual < diaNas) {
+                    idade--;
+                }
+            }
         }
         return idade;
     }
 
     public String dataDeNascimento() {
         return dia + "/" + mes + "/" + ano;
+    }
+
+    public boolean diaVeridico(int diaNas, int mesNas, int anoNas) {
+        boolean retorno = false;
+        if (mesNas == 2) {
+            if (diaNas <= 29 && (anoNas % 4 == 0) || diaNas <= 28) {
+                retorno = true;
+            } else {
+                retorno = false;
+            }
+        }
+        if (mesNas == 1 || mesNas == 3 || mesNas == 5 || mesNas == 7 || mesNas == 8 || mesNas == 10 || mesNas == 12) {
+            if (diaNas <= 31) {
+                retorno = true;
+            } else {
+                retorno = false;
+            }
+        }
+        if (mesNas == 4 || mesNas == 6 || mesNas == 9 || mesNas == 11) {
+            if (diaNas <= 30) {
+                retorno = true;
+            } else {
+                retorno = false;
+            }
+        }
+        return retorno;
     }
 
 }
