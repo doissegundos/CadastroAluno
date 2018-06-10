@@ -1,4 +1,4 @@
-package cadastro;
+package alunocadastro;
 
 public class Aluno extends Pessoa {
 
@@ -7,7 +7,7 @@ public class Aluno extends Pessoa {
     private float nota1;
     private float nota2;
     private float nota3;
-    
+
     public Aluno(String curso, int numMatricula, float nota1, float nota2, float nota3, String nome, String Sobrenome, String email, String dia, String mes, String ano) {
         super(nome, Sobrenome, email, dia, mes, ano);
         this.curso = curso;
